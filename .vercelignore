@@ -1,0 +1,7 @@
+# Ignore node server from Vercel static deployment
+server.js
+index.backup-green.html
+style.backup-green.css
+.git/
+.github/
+README.md

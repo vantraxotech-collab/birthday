@@ -1,0 +1,16 @@
+{
+  "name": "arooj-birthday",
+  "version": "1.0.0",
+  "description": "Happy Birthday Arooj — Interactive 3D Birthday Celebration Website",
+  "scripts": {
+    "start": "node server.js",
+    "build": "echo 'Static assets ready for deployment'"
+  },
+  "keywords": [
+    "birthday",
+    "threejs",
+    "celebration"
+  ],
+  "author": "Shafi",
+  "license": "ISC"
+}
