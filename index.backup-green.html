@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Arooj — My Entire Universe</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#041F1A] text-[#FDFBF7] antialiased selection:bg-[#00DF81] selection:text-black">
+
+  <!-- Ambient Soundtracks & Authentic Audio FX from Zero.University -->
+  <audio id="audio-amb-stage1" src="assets/audio/amb_stage1.mp3" loop preload="auto"></audio>
+  <audio id="audio-amb-stage2" src="assets/audio/amb_stage2-3.mp3" loop preload="auto"></audio>
+  <audio id="audio-fx-loader" src="assets/audio/fx_loader.mp3" preload="auto"></audio>
+  <audio id="audio-fx-loader-drag" src="assets/audio/fx_loader-drag.mp3" preload="auto"></audio>
+  <audio id="audio-fx-hold" src="assets/audio/fx_hold-button.mp3" preload="auto"></audio>
+  <audio id="audio-fx-shatter" src="assets/audio/fx_glass-shatter.mp3" preload="auto"></audio>
+  <audio id="audio-fx-hand" src="assets/audio/fx_hand-entry.mp3" preload="auto"></audio>
+  <audio id="audio-fx-whoosh" src="assets/audio/fx_whoosh.mp3" preload="auto"></audio>
+  <audio id="audio-fx-xp" src="assets/audio/fx_xp-topup.mp3" preload="auto"></audio>
+
+  <!-- Fullscreen Glass Shatter & Celestial Flash Overlay -->
+  <div id="glass-shatter-flash"></div>
+
+  <!-- Drifting Petals Canvas -->
+  <canvas id="particle-canvas" class="fixed inset-0 pointer-events-none z-30"></canvas>
+
+  <!-- ========================================== -->
+  <!-- ========================================== -->
+  <!-- TOP STATUS BAR (Responsive Luxury UI) -->
+  <!-- ========================================== -->
+  <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-3 sm:px-6 py-2.5 sm:py-4 pointer-events-none">
+    <!-- Left: Coordinates & Birthday Beacon -->
+    <div class="glass-pill px-3 py-1.5 sm:px-4 sm:py-2 rounded-full pointer-events-auto flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-mono tracking-wider sm:tracking-widest text-[#00DF81]">
+      <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#00DF81] animate-ping"></span>
+      <span class="hidden sm:inline">18.09° N • </span><span>AROOJ'S BIRTHDAY</span>
+    </div>
+
+    <!-- Right: Love Score & Sound Toggle -->
+    <div class="flex items-center gap-2 sm:gap-3 pointer-events-auto">
+      <div id="xp-pill" class="glass-pill px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full flex items-center gap-1.5 text-[10px] sm:text-xs font-mono text-[#FFE29A] transition transform hover:scale-105">
+        <i data-lucide="sparkles" class="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FFE29A]"></i>
+        <span id="xp-text" class="hidden sm:inline">100% LOVE XP</span>
+        <span class="sm:hidden font-bold">100% XP</span>
+      </div>
+
+      <button id="global-sound-toggle" class="glass-pill px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-full flex items-center gap-1.5 text-[10px] sm:text-xs font-mono hover:text-[#00DF81] transition cursor-pointer">
+        <div id="sound-wave-icon" class="flex items-center gap-0.5 h-2.5 sm:h-3">
+          <div class="audio-bar"></div>
+          <div class="audio-bar"></div>
+          <div class="audio-bar"></div>
+          <div class="audio-bar"></div>
+        </div>
+        <span id="sound-status-text" class="hidden sm:inline">SOUND: ON</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ======================================================== -->
+  <!-- HERO INTERACTIVE STAGES (Authentic 3D & Video Animated) -->
+  <!-- ======================================================== -->
+  <div id="hero-experience-wrapper" class="relative z-40">
+    
+    <!-- STAGE 1: CINEMATIC RED ROSE IN CLOUDS (Clean Full Page Video) -->
+    <div id="stage-1" class="stage-container flex flex-col items-center justify-between p-4 sm:p-10 relative overflow-hidden select-none">
+      <!-- Fullscreen Red Rose Floating in Clouds Video -->
+      <video id="intro-rose-video" class="absolute inset-0 w-full h-full object-cover z-0" playsinline preload="auto" muted>
+        <source src="assets/videos/red_rose_clouds.mp4" type="video/mp4">
+      </video>
+      <!-- Delicate light vignette to keep full page video radiant and vibrant -->
+      <div class="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/50 z-10 pointer-events-none"></div>
+
+      <!-- Video Progress Bar at Top -->
+      <div class="fixed top-0 left-0 right-0 h-1 bg-white/10 z-50 pointer-events-none">
+        <div id="rose-video-progress" class="h-full bg-gradient-to-r from-rose-500 via-[#FFE29A] to-[#00DF81] w-0 transition-all duration-100"></div>
+      </div>
+
+      <!-- Top Spacer to keep rose completely unobstructed -->
+      <div class="z-20 pt-16 sm:pt-20"></div>
+
+      <!-- Center Romantic Title (fades as user scrolls through the clouds) -->
+      <div id="intro-title-wrap" class="z-20 text-center flex flex-col items-center max-w-xl px-4 pointer-events-none transition-opacity duration-500">
+        <span class="font-script text-3xl sm:text-5xl text-[#FFE29A] block mb-1 glow-gold drop-shadow-lg">For My Beloved Arooj</span>
+        <h1 class="font-cormorant text-2xl sm:text-4xl lg:text-5xl font-light text-white leading-tight drop-shadow-2xl">
+          Beauty That Blooms Above the Clouds
+        </h1>
+      </div>
+
+      <!-- Bottom Action -->
+      <div class="z-20 pb-8 sm:pb-12 flex flex-col items-center">
+        <button id="skip-intro-btn" class="glass-pill px-6 sm:px-8 py-2.5 sm:py-3 rounded-full text-xs font-mono tracking-widest text-emerald-200/90 hover:text-[#00DF81] transition flex items-center gap-2 shadow-2xl cursor-pointer hover:scale-105 active:scale-95 border border-emerald-500/30">
+          <span>CONTINUE TO TAP & HOLD</span>
+          <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-[#00DF81]"></i>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- STAGE 2: "IN A WORLD OF BILLIONS... YOU LANDED IN MY HEART" (Authentic Video Background + Orbiting 3D Photo Medallions) -->
+    <div id="stage-2" class="stage-container stage-hidden flex flex-col justify-between p-6 sm:p-12 relative overflow-hidden select-none">
+      <!-- Authentic Animated Background Video from Zero.University -->
+      <video class="bg-video-layer absolute inset-0 w-full h-full object-cover -z-20" autoplay loop muted playsinline preload="auto">
+        <source src="assets/videos/stage2_background_video-mobile.mp4" type="video/mp4">
+      </video>
+
+      <!-- Sculpted Hand Overlay Background -->
+      <div class="absolute inset-0 -z-10 bg-cover bg-center filter brightness-95 opacity-80" style="background-image: url('assets/scene2_hand.jpg');"></div>
+      <div class="absolute inset-0 -z-10 bg-gradient-to-t from-[#041F1A]/85 via-transparent to-[#041F1A]/60"></div>
+
+      <!-- Floating 3D Token Badges with Real Photos of Arooj from D:\aroojj -->
+      <div id="floating-tokens-container" class="absolute inset-0 pointer-events-none z-10">
+        <!-- Token 1 -->
+        <div class="token-badge pointer-events-auto" style="top: 24%; left: 10%; animation-delay: 0s;">
+          <img src="assets/IMG-20260918-WA0000.jpg" alt="Arooj" class="w-12 h-12 rounded-full object-cover border-2 border-[#00DF81]">
+          <div>
+            <div class="text-[10px] font-mono text-[#00DF81] font-bold">SOULMATE</div>
+            <div class="text-xs font-medium text-white">Pure Magic</div>
+          </div>
+        </div>
+
+        <!-- Token 2 -->
+        <div class="token-badge pointer-events-auto" style="top: 18%; right: 12%; animation-delay: 1.5s;">
+          <img src="assets/IMG-20260918-WA0002.jpg" alt="Arooj" class="w-12 h-12 rounded-full object-cover border-2 border-[#FFE29A]">
+          <div>
+            <div class="text-[10px] font-mono text-[#FFE29A] font-bold">RADIANCE</div>
+            <div class="text-xs font-medium text-white">The Prettiest Smile</div>
+          </div>
+        </div>
+
+        <!-- Token 3 -->
+        <div class="token-badge pointer-events-auto hidden md:flex" style="bottom: 28%; left: 14%; animation-delay: 2.5s;">
+          <img src="assets/IMG-20260918-WA0008.jpg" alt="Arooj" class="w-12 h-12 rounded-full object-cover border-2 border-rose-400">
+          <div>
+            <div class="text-[10px] font-mono text-rose-300 font-bold">FAVORITE</div>
+            <div class="text-xs font-medium text-white">My Favorite Person</div>
+          </div>
+        </div>
+
+        <!-- Token 4 -->
+        <div class="token-badge pointer-events-auto hidden md:flex" style="bottom: 34%; right: 12%; animation-delay: 3.5s;">
+          <img src="assets/IMG-20260918-WA0010.jpg" alt="Arooj" class="w-12 h-12 rounded-full object-cover border-2 border-emerald-300">
+          <div>
+            <div class="text-[10px] font-mono text-emerald-300 font-bold">ETERNAL</div>
+            <div class="text-xs font-medium text-white">Forever With You</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top spacing -->
+      <div class="pt-14 z-20"></div>
+
+      <!-- Main Romance Statement -->
+      <div class="z-20 text-center max-w-2xl mx-auto px-4">
+        <span class="font-script text-4xl sm:text-6xl text-[#00DF81] block mb-2 glow-mint">In a world of billions...</span>
+        <h2 class="font-cormorant text-4xl sm:text-7xl font-light text-white leading-tight mb-6 drop-shadow-md">
+          You landed in my heart
+        </h2>
+        <p class="font-mono text-xs sm:text-sm tracking-wider text-emerald-100/90 max-w-md mx-auto mb-8">
+          Every star aligned the day our paths crossed, turning ordinary moments into extraordinary memories.
+        </p>
+
+        <button id="to-stage-3-btn" class="glass-pill px-8 py-3.5 rounded-full text-xs font-mono tracking-widest text-white hover:text-[#00DF81] transition flex items-center gap-3 mx-auto cursor-pointer glow-box-mint shadow-2xl hover:scale-105 active:scale-95">
+          <span>CONNECT OUR HEARTS</span>
+          <i data-lucide="arrow-right" class="w-4 h-4 text-[#00DF81]"></i>
+        </button>
+      </div>
+
+      <!-- Bottom Spacer -->
+      <div class="pb-8 z-20"></div>
+    </div>
+
+
+    <!-- STAGE 3: "TOUCH & HOLD TO CONNECT" (Dynamic Time-Passing Background + Creation of Adam Hands Touching) -->
+    <div id="stage-3" class="stage-container stage-hidden flex flex-col justify-between items-center p-6 sm:p-12">
+      <!-- Background Creation Hands Garden Scene -->
+      <div id="stage3-bg" class="absolute inset-0 -z-10 bg-cover bg-center filter brightness-95" style="background-image: url('assets/scene3_creation.jpg');"></div>
+      
+      <!-- Dynamic Time-Passing Color & Sky Shift Overlay -->
+      <div id="time-passing-overlay" class="time-passing-overlay"></div>
+      <div class="absolute inset-0 -z-10 bg-gradient-to-t from-[#041F1A]/80 via-transparent to-[#041F1A]/50"></div>
+
+      <!-- Top Tag with Live Time Passing Indicator -->
+      <div class="pt-14 z-20 flex flex-col items-center">
+        <div class="glass-pill px-5 py-2 rounded-full text-xs font-mono tracking-widest text-[#FFE29A] flex items-center gap-2 mb-2">
+          <i data-lucide="heart" class="w-3.5 h-3.5 fill-[#FFE29A]"></i>
+          <span>SOUL CONNECTION</span>
+        </div>
+        <div id="time-passing-indicator" class="text-[10px] font-mono tracking-widest text-emerald-200/80 uppercase">
+          Time of Day: Morning Sunlight
+        </div>
+      </div>
+
+      <!-- Center Interactive Tap & Hold Circle -->
+      <div class="z-20 flex flex-col items-center text-center">
+        <!-- Radial Tap & Hold Orb -->
+        <div id="tap-hold-trigger" class="tap-hold-orb group mb-6">
+          <div class="pulse-ring"></div>
+          
+          <!-- Golden Circular Progress SVG -->
+          <svg class="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" class="stroke-white/10 fill-none" stroke-width="3" />
+            <circle id="hold-progress-circle" cx="50" cy="50" r="46" class="stroke-[#00DF81] fill-none transition-all duration-75" stroke-width="4" stroke-dasharray="289" stroke-dashoffset="289" stroke-linecap="round" />
+          </svg>
+
+          <div class="flex flex-col items-center text-center z-10">
+            <i data-lucide="touch-interaction" class="w-7 h-7 text-[#00DF81] mb-1 group-hover:scale-110 transition"></i>
+            <span class="text-[11px] font-mono tracking-widest text-white font-bold">TAP & HOLD</span>
+            <span class="text-[9px] font-mono text-emerald-200 opacity-75">TO TOUCH</span>
+          </div>
+        </div>
+
+        <p class="font-cormorant text-2xl sm:text-3xl italic text-white/95 drop-shadow max-w-lg">
+          "When two souls are meant to connect, time and space bend to bring them together."
+        </p>
+      </div>
+
+      <!-- Bottom Hint -->
+      <div class="pb-8 z-20 text-xs font-mono tracking-wider text-emerald-200/60">
+        Hold down to watch time pass and our hands unite
+      </div>
+    </div>
+
+
+    <!-- STAGE 4: "HAPPY BIRTHDAY AROOJ" CLIMAX GREETING (Authentic Star Video Animation) -->
+    <div id="stage-4" class="stage-container stage-hidden flex flex-col justify-center items-center text-center p-4 sm:p-12">
+      <!-- Authentic Star Animation Video from Zero.University -->
+      <video id="star-animation-video" class="bg-video-layer mix-blend-screen opacity-70" autoplay loop muted playsinline preload="auto">
+        <source src="assets/videos/star_animation_480.mp4" type="video/mp4">
+      </video>
+
+      <!-- Background Dark Romantic Atmosphere -->
+      <div class="absolute inset-0 -z-10 bg-cover bg-center filter brightness-50" style="background-image: url('assets/scene3_creation.jpg');"></div>
+      <div class="absolute inset-0 -z-10 bg-gradient-to-b from-[#041F1A] via-[#041F1A]/85 to-[#041F1A]"></div>
+
+      <div class="z-20 max-w-3xl mx-auto flex flex-col items-center animate-fade-in px-4">
+        <div class="glass-pill px-4 sm:px-6 py-1.5 sm:py-2 rounded-full text-[11px] sm:text-xs font-mono tracking-widest text-[#00DF81] mb-4 sm:mb-6 flex items-center gap-2">
+          <i data-lucide="cake" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#00DF81]"></i>
+          <span>CELEBRATING HER DAY</span>
+        </div>
+
+        <h1 class="font-cormorant text-4xl sm:text-7xl lg:text-9xl font-light text-white leading-none tracking-tight mb-3 sm:mb-4">
+          Happy Birthday, <br>
+          <span class="font-script text-5xl sm:text-8xl lg:text-[10rem] text-[#00DF81] glow-mint">Arooj</span>
+        </h1>
+
+        <p class="font-cormorant italic text-lg sm:text-2xl lg:text-3xl text-[#FFE29A] max-w-xl mb-6 sm:mb-8 leading-relaxed glow-gold px-2">
+          "You are my yesterday, my today, and all of my tomorrows."
+        </p>
+
+        <!-- Call to Action to enter scrollable memory universe -->
+        <button id="enter-universe-btn" class="glass-pill px-6 sm:px-10 py-3.5 sm:py-4 rounded-full text-xs sm:text-sm font-mono tracking-widest text-white hover:text-[#00DF81] transition flex items-center gap-2.5 sm:gap-3 cursor-pointer shadow-2xl glow-box-mint hover:scale-105 active:scale-95">
+          <span>ENTER HER MEMORY UNIVERSE</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 sm:w-5 sm:h-5 text-[#00DF81] animate-bounce"></i>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MAIN SCROLLABLE WEBPAGE (Memory Universe with Arooj's Media) -->
+  <!-- ======================================================== -->
+  <main id="main-content" class="relative z-20 w-full min-h-screen bg-[#041F1A] overflow-hidden">
+
+    <!-- HERO INTRO BANNER -->
+    <section class="min-h-screen flex flex-col items-center justify-center text-center px-4 sm:px-6 relative overflow-hidden py-16 sm:py-20">
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-900/35 via-[#041F1A] to-[#041F1A] -z-10"></div>
+      
+      <!-- Subtle Floating Badges of Arooj -->
+      <div class="absolute top-24 left-6 sm:left-16 pointer-events-none hidden md:flex items-center gap-3 glass-pill px-4 py-2 rounded-full border border-emerald-500/30 animate-pulse">
+        <img src="assets/IMG-20260918-WA0000.jpg" alt="Arooj" class="w-9 h-9 rounded-full object-cover border border-[#00DF81]">
+        <div class="text-left">
+          <div class="text-[9px] font-mono text-[#00DF81] font-bold">SOULMATE</div>
+          <div class="text-[11px] text-white">Pure Magic</div>
+        </div>
+      </div>
+
+      <div class="absolute top-28 right-6 sm:right-16 pointer-events-none hidden md:flex items-center gap-3 glass-pill px-4 py-2 rounded-full border border-[#FFE29A]/30 animate-pulse" style="animation-delay: 1.5s;">
+        <img src="assets/IMG-20260918-WA0002.jpg" alt="Arooj" class="w-9 h-9 rounded-full object-cover border border-[#FFE29A]">
+        <div class="text-left">
+          <div class="text-[9px] font-mono text-[#FFE29A] font-bold">RADIANCE</div>
+          <div class="text-[11px] text-white">Prettiest Smile</div>
+        </div>
+      </div>
+
+      <div class="glass-pill px-4 sm:px-6 py-1.5 sm:py-2.5 rounded-full text-[11px] sm:text-xs font-mono tracking-widest text-[#00DF81] mb-4 sm:mb-6 flex items-center gap-2 shadow-lg">
+        <i data-lucide="crown" class="w-4 h-4 text-[#FFE29A]"></i>
+        <span>CELEBRATING HER SPECIAL DAY</span>
+      </div>
+
+      <h1 class="font-cormorant text-4xl sm:text-7xl lg:text-9xl font-light text-white leading-tight mb-3 drop-shadow-2xl">
+        Happy Birthday, <br class="sm:hidden">
+        <span class="font-script text-5xl sm:text-8xl lg:text-[10rem] text-[#00DF81] glow-mint block mt-1">Arooj</span>
+      </h1>
+      
+      <p class="font-cormorant italic text-lg sm:text-2xl lg:text-3xl text-[#FFE29A] max-w-xl mx-auto mb-6 glow-gold px-2">
+        "You are my yesterday, my today, and all of my tomorrows."
+      </p>
+      
+      <p class="font-mono text-xs sm:text-sm text-emerald-200/80 max-w-lg mx-auto tracking-wider mb-8 sm:mb-10 px-4">
+        Every smile captured, every laugh shared, every second of love. Scroll down to relive the sweetest moments.
+      </p>
+
+      <div class="flex items-center gap-3 sm:gap-4 flex-wrap justify-center mb-8 sm:mb-10">
+        <a href="#photo-gallery" class="glass-pill px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs font-mono tracking-widest text-white hover:text-[#00DF81] transition flex items-center gap-2 shadow-xl hover:scale-105 active:scale-95">
+          <i data-lucide="camera" class="w-4 h-4 text-[#00DF81]"></i>
+          <span>EXPLORE MEMORIES</span>
+        </a>
+        <a href="#make-a-wish" class="glass-pill px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs font-mono tracking-widest text-white hover:text-[#FFE29A] transition flex items-center gap-2 shadow-xl hover:scale-105 active:scale-95">
+          <i data-lucide="cake" class="w-4 h-4 text-amber-400"></i>
+          <span>BLOW CANDLES</span>
+        </a>
+      </div>
+
+      <a href="#photo-gallery" class="animate-bounce p-3 rounded-full border border-emerald-500/30 text-[#00DF81] hover:border-[#00DF81] transition">
+        <i data-lucide="arrow-down" class="w-5 h-5"></i>
+      </a>
+    </section>
+
+    <!-- SECTION 1: 3D POLAROID PHOTO GALLERY (Real photos from D:\aroojj) -->
+    <section id="photo-gallery" class="py-24 px-6 sm:px-12 max-w-7xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="glass-pill inline-flex px-5 py-2 rounded-full text-xs font-mono text-[#00DF81] mb-4 items-center gap-2">
+          <i data-lucide="camera" class="w-4 h-4"></i>
+          <span>SNAPSHOTS OF PERFECTION</span>
+        </div>
+        <h2 class="font-cormorant text-4xl sm:text-6xl text-white font-light tracking-wide mb-3">
+          Moments Frozen in Time
+        </h2>
+        <p class="font-mono text-xs sm:text-sm text-emerald-200/70 tracking-wider">
+          Hover to tilt in 3D • Click any photo for full cinema view & personal note
+        </p>
+      </div>
+
+      <!-- 3D Polaroid Grid -->
+      <div id="polaroid-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <!-- Rendered dynamically via JavaScript with Arooj's photos -->
+      </div>
+    </section>
+
+    <!-- SECTION 2: 3D MEMORY VIDEO THEATER (Real videos from D:\aroojj) -->
+    <section id="video-theater" class="py-24 px-6 sm:px-12 bg-gradient-to-b from-[#041F1A] via-[#062923] to-[#041F1A]">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+          <div class="glass-pill inline-flex px-5 py-2 rounded-full text-xs font-mono text-[#FFE29A] mb-4 items-center gap-2">
+            <i data-lucide="film" class="w-4 h-4 text-[#FFE29A]"></i>
+            <span>LIVING MEMORIES</span>
+          </div>
+          <h2 class="font-cormorant text-4xl sm:text-6xl text-white font-light tracking-wide mb-3">
+            Her Grace in Motion
+          </h2>
+          <p class="font-mono text-xs sm:text-sm text-emerald-200/70 tracking-wider">
+            Live video recordings of our unforgettable memories
+          </p>
+        </div>
+
+        <!-- Video Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <!-- Video 1 -->
+          <div class="video-card p-4 flex flex-col">
+            <div class="relative rounded-xl overflow-hidden aspect-[9/16] bg-black/50 mb-4">
+              <video class="w-full h-full object-cover rounded-xl" loop playsinline controls preload="metadata">
+                <source src="assets/VID-20260918-WA0016.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="mt-auto">
+              <span class="text-[10px] font-mono text-[#00DF81] uppercase tracking-widest">CHAPTER 01</span>
+              <h3 class="font-cormorant text-2xl text-white font-medium">Radiant Laughter</h3>
+              <p class="text-xs text-emerald-200/70 font-mono mt-1">The joy that instantly brightens every corner of the room.</p>
+            </div>
+          </div>
+
+          <!-- Video 2 -->
+          <div class="video-card p-4 flex flex-col border-[#00DF81]/60 shadow-[0_0_35px_rgba(0,223,129,0.25)]">
+            <div class="relative rounded-xl overflow-hidden aspect-[9/16] bg-black/50 mb-4">
+              <video class="w-full h-full object-cover rounded-xl" loop playsinline controls preload="metadata">
+                <source src="assets/VID-20260918-WA0017.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="mt-auto">
+              <span class="text-[10px] font-mono text-[#FFE29A] uppercase tracking-widest">CHAPTER 02 • FEATURED</span>
+              <h3 class="font-cormorant text-2xl text-white font-medium">Unforgettable Moments</h3>
+              <p class="text-xs text-emerald-200/70 font-mono mt-1">A glimpse into the warmth and gentleness of her beautiful soul.</p>
+            </div>
+          </div>
+
+          <!-- Video 3 -->
+          <div class="video-card p-4 flex flex-col">
+            <div class="relative rounded-xl overflow-hidden aspect-[9/16] bg-black/50 mb-4">
+              <video class="w-full h-full object-cover rounded-xl" loop playsinline controls preload="metadata">
+                <source src="assets/VID_20260918_120538.mp4" type="video/mp4">
+              </video>
+            </div>
+            <div class="mt-auto">
+              <span class="text-[10px] font-mono text-[#00DF81] uppercase tracking-widest">CHAPTER 03</span>
+              <h3 class="font-cormorant text-2xl text-white font-medium">Pure Magic</h3>
+              <p class="text-xs text-emerald-200/70 font-mono mt-1">Every second spent with you is a gift I will treasure for life.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: INTERACTIVE 3D BIRTHDAY CAKE & CANDLE WISH -->
+    <section id="make-a-wish" class="py-24 px-6 sm:px-12 max-w-4xl mx-auto text-center">
+      <div class="glass-panel p-8 sm:p-14 rounded-3xl relative overflow-hidden">
+        <div class="glass-pill inline-flex px-5 py-2 rounded-full text-xs font-mono text-[#FFE29A] mb-6 items-center gap-2">
+          <i data-lucide="flame" class="w-4 h-4 text-amber-400"></i>
+          <span>SACRED BIRTHDAY RITUAL</span>
+        </div>
+
+        <h2 class="font-cormorant text-4xl sm:text-6xl text-white font-light mb-3">
+          Make a Birthday Wish
+        </h2>
+        <p class="font-mono text-xs sm:text-sm text-emerald-200/80 max-w-md mx-auto mb-10 tracking-wider">
+          Close your eyes, hold your dearest dream in your heart, and tap the candle below to blow out the flame.
+        </p>
+
+        <!-- Birthday Cake Visual -->
+        <div class="relative w-64 h-56 mx-auto mb-10 flex flex-col items-center justify-end">
+          <!-- Candles with Flames -->
+          <div class="flex items-end justify-center gap-6 mb-2 z-10">
+            <!-- Candle 1 -->
+            <div class="flex flex-col items-center">
+              <div id="candle-flame-1" class="candle-flame mb-1 cursor-pointer"></div>
+              <div class="w-3.5 h-16 bg-gradient-to-b from-pink-200 to-rose-400 rounded-t-sm shadow-md border-t border-white/60"></div>
+            </div>
+            <!-- Candle 2 (Main) -->
+            <div class="flex flex-col items-center">
+              <div id="candle-flame-2" class="candle-flame mb-1 cursor-pointer"></div>
+              <div class="w-4 h-20 bg-gradient-to-b from-amber-200 to-amber-500 rounded-t-sm shadow-md border-t border-white/60"></div>
+            </div>
+            <!-- Candle 3 -->
+            <div class="flex flex-col items-center">
+              <div id="candle-flame-3" class="candle-flame mb-1 cursor-pointer"></div>
+              <div class="w-3.5 h-16 bg-gradient-to-b from-emerald-200 to-[#00DF81] rounded-t-sm shadow-md border-t border-white/60"></div>
+            </div>
+          </div>
+
+          <!-- Cake Tier 1 (Top) -->
+          <div class="w-48 h-12 bg-gradient-to-r from-emerald-200 via-rose-100 to-emerald-200 rounded-2xl shadow-lg border-2 border-white/40 flex items-center justify-center">
+            <span class="font-script text-xl text-[#0D4036]">Arooj</span>
+          </div>
+          <!-- Cake Tier 2 (Bottom Base) -->
+          <div class="w-64 h-16 bg-gradient-to-r from-[#0D4036] via-[#105649] to-[#0D4036] rounded-2xl shadow-2xl border-t-2 border-[#00DF81]/50 flex items-center justify-center">
+            <span class="font-cinzel text-xs tracking-widest text-[#FFE29A]">HAPPY BIRTHDAY</span>
+          </div>
+        </div>
+
+        <!-- Wish Button -->
+        <button id="blow-candle-btn" class="glass-pill px-8 py-4 rounded-full text-xs sm:text-sm font-mono tracking-widest text-white hover:text-[#00DF81] transition flex items-center gap-3 mx-auto cursor-pointer glow-box-mint">
+          <i data-lucide="wind" class="w-4 h-4 text-[#00DF81]"></i>
+          <span id="blow-btn-text">BLOW CANDLES & MAKE A WISH</span>
+        </button>
+
+        <p id="wish-success-msg" class="hidden mt-6 font-cormorant italic text-2xl text-[#FFE29A] glow-gold animate-fade-in">
+          "May all your purest wishes fly up to heaven and come true for you this year, Arooj!"
+        </p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: 6 REASONS WHY I LOVE YOU (3D Flip Deck) -->
+    <section id="reasons" class="py-24 px-6 sm:px-12 max-w-6xl mx-auto">
+      <div class="text-center mb-16">
+        <div class="glass-pill inline-flex px-5 py-2 rounded-full text-xs font-mono text-[#00DF81] mb-4 items-center gap-2">
+          <i data-lucide="heart" class="w-4 h-4 fill-[#00DF81]"></i>
+          <span>FROM THE BOTTOM OF MY HEART</span>
+        </div>
+        <h2 class="font-cormorant text-4xl sm:text-6xl text-white font-light tracking-wide mb-3">
+          Why You Mean Everything
+        </h2>
+        <p class="font-mono text-xs sm:text-sm text-emerald-200/70 tracking-wider">
+          Click any card to flip and read
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i data-lucide="sparkles" class="w-8 h-8 text-[#FFE29A] mb-4"></i>
+              <h3 class="font-cinzel text-lg text-white mb-2">01. Your Radiant Smile</h3>
+              <p class="text-xs text-emerald-200/60 font-mono">Tap to flip</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-cormorant italic text-xl text-emerald-100 leading-relaxed">
+                "Your smile has the power to melt away every worry and turn the hardest day into peace."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i data-lucide="heart-handshake" class="w-8 h-8 text-[#00DF81] mb-4"></i>
+              <h3 class="font-cinzel text-lg text-white mb-2">02. Your Pure Kindness</h3>
+              <p class="text-xs text-emerald-200/60 font-mono">Tap to flip</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-cormorant italic text-xl text-emerald-100 leading-relaxed">
+                "The tender way you care for people, your warmth, and the purity of your soul inspire me every single day."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i data-lucide="moon" class="w-8 h-8 text-rose-300 mb-4"></i>
+              <h3 class="font-cinzel text-lg text-white mb-2">03. Our Conversations</h3>
+              <p class="text-xs text-emerald-200/60 font-mono">Tap to flip</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-cormorant italic text-xl text-emerald-100 leading-relaxed">
+                "Where hours pass like minutes, and I still never want our talks to end."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i data-lucide="music" class="w-8 h-8 text-[#FFE29A] mb-4"></i>
+              <h3 class="font-cinzel text-lg text-white mb-2">04. Your Sweet Laugh</h3>
+              <p class="text-xs text-emerald-200/60 font-mono">Tap to flip</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-cormorant italic text-xl text-emerald-100 leading-relaxed">
+                "The sweetest sound in the universe. Hearing you laugh is my favorite soundtrack."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i data-lucide="shield" class="w-8 h-8 text-[#00DF81] mb-4"></i>
+              <h3 class="font-cinzel text-lg text-white mb-2">05. Your Inner Strength</h3>
+              <p class="text-xs text-emerald-200/60 font-mono">Tap to flip</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-cormorant italic text-xl text-emerald-100 leading-relaxed">
+                "The grace, dignity, and determination with which you navigate life fills me with immense admiration."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="flip-card" onclick="this.classList.toggle('is-flipped')">
+          <div class="flip-card-inner">
+            <div class="flip-card-front">
+              <i data-lucide="infinity" class="w-8 h-8 text-rose-400 mb-4"></i>
+              <h3 class="font-cinzel text-lg text-white mb-2">06. Our Future</h3>
+              <p class="text-xs text-emerald-200/60 font-mono">Tap to flip</p>
+            </div>
+            <div class="flip-card-back">
+              <p class="font-cormorant italic text-xl text-emerald-100 leading-relaxed">
+                "Because every dream I build for tomorrow has your hand held tightly in mine."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: THE BIRTHDAY LOVE LETTER -->
+    <section id="love-letter" class="py-24 px-6 sm:px-12 max-w-4xl mx-auto">
+      <div class="glass-panel p-8 sm:p-14 rounded-3xl relative border border-[#00DF81]/30">
+        <div class="text-center mb-8">
+          <!-- Wax Seal -->
+          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 shadow-xl border-2 border-[#FFE29A] flex items-center justify-center mx-auto mb-4">
+            <span class="font-script text-3xl text-amber-100 font-bold">A</span>
+          </div>
+          <span class="font-mono text-xs tracking-widest text-[#00DF81] uppercase">A Personal Letter for You</span>
+          <h2 class="font-cormorant text-4xl sm:text-5xl text-white mt-1">To My Dearest Arooj</h2>
+        </div>
+
+        <!-- Letter Content with Typewriter Effect -->
+        <div class="font-cormorant text-lg sm:text-2xl text-emerald-50 leading-relaxed space-y-6 max-w-2xl mx-auto border-t border-b border-emerald-500/20 py-8">
+          <p>
+            i love you jaan and apko express nhi kr pata pr mei apsaay boht mohabbt krta hoo. sorry jo howa apko lga ignore mei aisa nhi ho, mei apkay baghair rhaay nhi skta ignore kha kro ga.
+          </p>
+          <p>
+            happy birthday jaan, mujhay ni pta yaay sb apko kisa lgaay ga pr jaan i give you special treat. wish to sbb kraay gaay apko prr shyd iss trah mei hee kro q kaay app special treat krti mujhay to mei bhi special wish kia apko.
+          </p>
+          <p>
+            jaan apko allah seht waali zindagi daay ameen, khush raaho jaaan.
+          </p>
+          <p class="text-right font-script text-3xl sm:text-4xl text-[#FFE29A] pt-4">
+            mei apka piyaara insaan shafi ❤️
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-16 text-center border-t border-emerald-500/10">
+      <div class="font-script text-4xl text-[#00DF81] mb-2">Happy Birthday, Arooj</div>
+      <p class="font-mono text-xs text-emerald-200/50 tracking-widest uppercase">
+        Created with eternal love by Shafi • 2026 & Beyond
+      </p>
+    </footer>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- FLOATING PERSISTENT BOTTOM NAVIGATION BAR  -->
+  <!-- ========================================== -->
+  <nav id="bottom-dock" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 glass-pill px-6 py-3 rounded-full flex items-center gap-4 sm:gap-6 text-xs font-mono shadow-2xl opacity-0 pointer-events-none transition-opacity duration-500">
+    <a href="#photo-gallery" class="hover:text-[#00DF81] transition flex items-center gap-1.5">
+      <i data-lucide="image" class="w-3.5 h-3.5"></i>
+      <span class="hidden sm:inline">Memories</span>
+    </a>
+    <a href="#video-theater" class="hover:text-[#00DF81] transition flex items-center gap-1.5">
+      <i data-lucide="video" class="w-3.5 h-3.5"></i>
+      <span class="hidden sm:inline">Videos</span>
+    </a>
+    <a href="#make-a-wish" class="hover:text-[#00DF81] transition flex items-center gap-1.5">
+      <i data-lucide="cake" class="w-3.5 h-3.5"></i>
+      <span class="hidden sm:inline">Wish</span>
+    </a>
+    <a href="#love-letter" class="hover:text-[#00DF81] transition flex items-center gap-1.5">
+      <i data-lucide="mail" class="w-3.5 h-3.5"></i>
+      <span class="hidden sm:inline">Letter</span>
+    </a>
+
+    <div class="w-px h-4 bg-emerald-500/30"></div>
+
+    <button id="dock-rose-btn" class="hover:text-rose-400 transition flex items-center gap-1.5 cursor-pointer text-rose-300" title="Replay Rose Intro">
+      <i data-lucide="flower" class="w-3.5 h-3.5 text-rose-400"></i>
+      <span class="hidden sm:inline">Rose Intro</span>
+    </button>
+
+    <button id="dock-hold-btn" class="hover:text-[#FFE29A] transition flex items-center gap-1.5 cursor-pointer text-[#FFE29A]" title="Replay Tap & Hold">
+      <i data-lucide="heart" class="w-3.5 h-3.5 fill-[#FFE29A]"></i>
+      <span class="hidden sm:inline">Tap & Hold</span>
+    </button>
+
+    <button id="dock-music-btn" class="text-[#00DF81] flex items-center gap-2 cursor-pointer">
+      <i data-lucide="music" class="w-3.5 h-3.5"></i>
+      <span id="dock-music-text">Soundtrack</span>
+    </button>
+  </nav>
+
+  <!-- ========================================== -->
+  <!-- FULLSCREEN LIGHTBOX MODAL FOR MEMORIES    -->
+  <!-- ========================================== -->
+  <div id="lightbox-modal" class="lightbox-modal">
+    <button id="close-lightbox-btn" class="absolute top-6 right-6 p-3 rounded-full glass-pill text-white hover:text-[#00DF81] transition cursor-pointer z-50">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <div class="max-w-4xl max-h-[85vh] p-4 flex flex-col items-center">
+      <img id="lightbox-img" src="" alt="Arooj Memory" class="max-h-[70vh] w-auto rounded-2xl shadow-2xl object-contain border border-white/20 mb-4">
+      <p id="lightbox-caption" class="font-cormorant italic text-xl sm:text-2xl text-center text-[#FFE29A]"></p>
+    </div>
+  </div>
+
+  <!-- Main Interactive Engine -->
+  <script src="script.js"></script>
+</body>
+</html>
