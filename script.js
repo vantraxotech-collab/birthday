@@ -25,12 +25,30 @@ function initApp() {
   const dockMusicBtn = document.getElementById('dock-music-btn');
   const dockMusicText = document.getElementById('dock-music-text');
 
-  // Start initial ambient sound on first user gesture
+  // Start initial ambient sound and prime all audio elements on first mobile gesture
   let hasInteracted = false;
   function initAudioOnFirstTouch() {
     if (hasInteracted) return;
     hasInteracted = true;
-    if (isSoundEnabled) {
+
+    // Mobile Autoplay Fix: Pre-unlock all celebration audio tracks during user interaction
+    [ambStage1, ambStage2, mainSong, fxHold, fxShatter, fxXp, fxWhoosh].forEach(audio => {
+      if (!audio) return;
+      try {
+        const p = audio.play();
+        if (p !== undefined) {
+          p.then(() => {
+            // Keep ambStage1 playing if sound enabled; pause others until needed
+            if (audio !== ambStage1) {
+              audio.pause();
+              audio.currentTime = 0;
+            }
+          }).catch(() => {});
+        }
+      } catch (err) {}
+    });
+
+    if (isSoundEnabled && ambStage1) {
       ambStage1.volume = 0.5;
       ambStage1.play().catch(() => {});
       soundToggle.classList.add('is-playing');
@@ -38,6 +56,7 @@ function initApp() {
   }
   window.addEventListener('click', initAudioOnFirstTouch, { once: true });
   window.addEventListener('touchstart', initAudioOnFirstTouch, { once: true });
+  window.addEventListener('pointerdown', initAudioOnFirstTouch, { once: true });
 
   function playFx(audioEl, vol = 0.8) {
     if (!isSoundEnabled || !audioEl) return;
@@ -55,7 +74,10 @@ function initApp() {
       soundStatusText.innerText = 'SOUND: ON';
       dockMusicText.innerText = stage3Completed ? 'Him & I (Remix)' : 'Soundtrack';
       if (stage3Completed) {
-        if (mainSong) mainSong.play().catch(() => {});
+        if (mainSong) {
+          mainSong.volume = 0.85;
+          mainSong.play().catch(() => {});
+        }
       } else {
         if (ambStage1) ambStage1.play().catch(() => {});
       }
@@ -106,7 +128,7 @@ function initApp() {
     // Clear previous pause timer
     clearTimeout(pauseDebounceTimer);
 
-    // Pause immediately when user stops scrolling
+    // Pause smoothly when user stops scrolling (extended to 340ms for buttery glide on mobile)
     pauseDebounceTimer = setTimeout(() => {
       if (!roseStageCompleted && roseVideo && !roseVideo.paused) {
         roseVideo.pause();
@@ -116,7 +138,7 @@ function initApp() {
           playPulseDot.classList.add('bg-rose-400', 'animate-pulse');
         }
       }
-    }, 190);
+    }, 340);
   }
 
   // Mouse Wheel / Trackpad Scroll
@@ -149,7 +171,7 @@ function initApp() {
     }
   });
 
-  // Touch Swipe on Mobile
+  // Touch Swipe & Tap on Mobile with smooth inertial glide
   let roseTouchStartY = 0;
   window.addEventListener('touchstart', (e) => {
     roseTouchStartY = e.touches[0].clientY;
@@ -160,9 +182,9 @@ function initApp() {
     if (!s1 || s1.classList.contains('stage-hidden') || roseStageCompleted) return;
     const currentY = e.touches[0].clientY;
     const diff = roseTouchStartY - currentY;
-    if (diff > 4) {
+    if (diff > 2) {
       handleScrollPlay(diff);
-    } else if (diff < -8) {
+    } else if (diff < -6) {
       if (roseVideo && roseVideo.currentTime > 0.15) {
         roseVideo.currentTime = Math.max(0, roseVideo.currentTime - 0.15);
       }
@@ -401,6 +423,21 @@ function initApp() {
     if (e.type === 'touchstart') e.preventDefault();
     tapHoldTrigger.classList.add('is-holding');
 
+    // MOBILE AUTOPLAY FIX: Prime mainSong synchronously during this real touchstart event
+    if (mainSong) {
+      try {
+        const prime = mainSong.play();
+        if (prime !== undefined) {
+          prime.then(() => {
+            if (!stage3Completed) {
+              mainSong.pause();
+              mainSong.currentTime = 0;
+            }
+          }).catch(() => {});
+        }
+      } catch (err) {}
+    }
+
     // Start authentic hold sound
     if (isSoundEnabled && fxHold) {
       fxHold.currentTime = 0;
@@ -467,13 +504,23 @@ function initApp() {
     if (ambStage1) { ambStage1.pause(); ambStage1.currentTime = 0; }
     if (ambStage2) { ambStage2.pause(); ambStage2.currentTime = 0; }
 
-    if (isSoundEnabled && mainSong) {
-      mainSong.currentTime = 0;
-      mainSong.volume = 0.85;
-      mainSong.play().catch(e => console.log('Autoplay prevented:', e));
-      soundToggle.classList.add('is-playing');
-      if (dockMusicText) dockMusicText.innerText = 'Him & I (Remix)';
+    function playCelebrationSong() {
+      if (isSoundEnabled && mainSong) {
+        mainSong.currentTime = 0;
+        mainSong.volume = 0.85;
+        const playPromise = mainSong.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            soundToggle.classList.add('is-playing');
+            if (dockMusicText) dockMusicText.innerText = 'Him & I (Remix)';
+          }).catch((err) => {
+            console.log('Mobile audio start deferred to next interaction:', err);
+          });
+        }
+      }
     }
+
+    playCelebrationSong();
 
     glassShatterFlash.style.opacity = '1';
     setTimeout(() => { glassShatterFlash.style.opacity = '0'; }, 400);
@@ -516,6 +563,13 @@ function initApp() {
   if (enterUniverseBtn) {
     enterUniverseBtn.addEventListener('click', () => {
       playFx(fxWhoosh, 0.9);
+      // Ensure celebration song is playing on mobile
+      if (isSoundEnabled && mainSong && mainSong.paused) {
+        mainSong.volume = 0.85;
+        mainSong.play().catch(() => {});
+        soundToggle.classList.add('is-playing');
+        if (dockMusicText) dockMusicText.innerText = 'Him & I (Remix)';
+      }
       // Smoothly scroll down past the hero viewport
       const hero = document.getElementById('hero-experience-wrapper');
       if (hero) hero.style.display = 'none';
@@ -527,6 +581,19 @@ function initApp() {
       });
     });
   }
+
+  // Mobile safety net: any interaction once stage 3 is completed guarantees the song plays
+  function resumeCelebrationAudioOnGesture() {
+    if (stage3Completed && isSoundEnabled && mainSong && mainSong.paused) {
+      mainSong.volume = 0.85;
+      mainSong.play().then(() => {
+        soundToggle.classList.add('is-playing');
+        if (dockMusicText) dockMusicText.innerText = 'Him & I (Remix)';
+      }).catch(() => {});
+    }
+  }
+  window.addEventListener('click', resumeCelebrationAudioOnGesture);
+  window.addEventListener('touchend', resumeCelebrationAudioOnGesture);
 
   // --- MAIN WEBPAGE: 3D POLAROID GALLERY WITH AROOJ'S REAL PHOTOS ---
   const aroojMemories = [

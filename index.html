@@ -70,7 +70,7 @@
     <!-- STAGE 1: CINEMATIC RED ROSE IN CLOUDS (Clean Full Page Video) -->
     <div id="stage-1" class="stage-container flex flex-col items-center justify-between p-4 sm:p-10 relative overflow-hidden select-none">
       <!-- Fullscreen Red Rose Floating in Clouds Video -->
-      <video id="intro-rose-video" class="absolute inset-0 w-full h-full object-cover z-0" playsinline preload="auto" muted>
+      <video id="intro-rose-video" class="absolute inset-0 w-full h-full object-cover z-0" playsinline webkit-playsinline preload="auto" muted>
         <source src="assets/videos/red_rose_clouds.mp4" type="video/mp4">
       </video>
       <!-- Delicate light vignette to keep full page video radiant and vibrant -->
@@ -81,15 +81,12 @@
         <div id="rose-video-progress" class="h-full bg-gradient-to-r from-rose-500 via-[#FFE29A] to-amber-400 w-0 transition-all duration-100"></div>
       </div>
 
-      <!-- Top Spacer to keep rose completely unobstructed -->
-      <div class="z-20 pt-16 sm:pt-20"></div>
-
-      <!-- Center Romantic Title (fades as user scrolls through the clouds) -->
-      <div id="intro-title-wrap" class="z-20 text-center flex flex-col items-center max-w-xl px-4 pointer-events-none transition-opacity duration-500">
-        <span class="font-script text-3xl sm:text-5xl text-[#FFE29A] block mb-1 glow-gold drop-shadow-lg">For My Beloved Arooj</span>
-        <h1 class="font-cormorant text-2xl sm:text-4xl lg:text-5xl font-light text-white leading-tight drop-shadow-2xl">
+      <!-- Top Romantic Title (Placed cleanly above the rose so it NEVER blocks the rose petals on mobile or desktop) -->
+      <div id="intro-title-wrap" class="z-20 text-center flex flex-col items-center max-w-xl px-4 pointer-events-none transition-opacity duration-500 pt-12 sm:pt-16">
+        <span class="font-script text-2xl sm:text-4xl lg:text-5xl text-[#FFE29A] block mb-0.5 glow-gold drop-shadow-lg">For My Beloved Arooj</span>
+        <p class="font-cormorant italic text-xs sm:text-lg text-amber-100/80 leading-snug drop-shadow-md hidden sm:block">
           Beauty That Blooms Above the Clouds
-        </h1>
+        </p>
       </div>
 
       <!-- Bottom Action -->
